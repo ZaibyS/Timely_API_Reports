@@ -1,8 +1,18 @@
 import json
 import csv
 
-def extract_and_store_csv(json_filename, csv_filename):
-    # Read JSON data from file
+
+def extract_label_name(label_id, labels_data):
+    for label in labels_data:
+        if label['id'] == label_id:
+            return label['name']
+    return None
+
+def extract_and_store_csv(json_filename, csv_filename, labels_filename):
+    # Read JSON data from the 'reports' file
+    with open(labels_filename, 'r') as labels_file:
+        labels_data = json.load(labels_file)['labels']
+
     with open(json_filename, 'r') as json_file:
         data = json.load(json_file)
 
@@ -21,11 +31,24 @@ def extract_and_store_csv(json_filename, csv_filename):
         user_email = entry['user']['email']
         billable_hours = entry['duration']['total_hours']
         logged_money = entry['cost']['amount']
-        hour_billed_status = entry['billed']
+        hour_billed_status = "Yes" if entry['billed'] else "No"
         hour_notes = entry['note']
-        external_id = entry['external_link_ids']
+        external_id = ','.join(map(str, entry['external_link_ids']))
         budget_type = entry['project']['budget_type']
         project_description = entry['project']['description']
+
+        # Extract label_ids and required_label_ids
+        label_ids = entry['label_ids']
+        required_label_ids = entry['project']['required_label_ids']
+
+        # Calculate the difference between label_ids and required_label_ids
+        label_id_difference = list(set(label_ids) - set(required_label_ids))
+
+        # Fetch label names based on label IDs in 'Label ID Difference'
+        label_names = [extract_label_name(int(label_id), labels_data) for label_id in label_id_difference]
+
+        # Convert label names to a comma-separated string
+        label_names_str = ','.join(filter(None, label_names))
 
         # Extract timestamps dynamically
         timestamps = entry.get('timestamps', [])
@@ -44,7 +67,7 @@ def extract_and_store_csv(json_filename, csv_filename):
                 'ID' : user_id,
                 'Billable Hours' : billable_hours,
                 'Logged Money': logged_money,
-                'Hour Tags': None,
+                'Hour Tags': label_names_str,
                 'Hour Billed Status' : hour_billed_status,
                 'Hour Note': hour_notes,
                 'Hour From': from_time,
@@ -80,7 +103,7 @@ def extract_and_store_csv(json_filename, csv_filename):
                 'ID' : user_id,
                 'Billable Hours' : billable_hours,
                 'Logged Money': logged_money,
-                'Hour Tags': None,
+                'Hour Tags': label_names_str,
                 'Hour Billed Status' : hour_billed_status,
                 'Hour Note': hour_notes,
                 'Hour From': None,
@@ -120,6 +143,7 @@ def extract_and_store_csv(json_filename, csv_filename):
         writer.writerows(extracted_data)
 
 # Example usage:
-json_filename = 'reports_28_02.json'
-csv_filename = 'extracted_data_28_02.csv'
-extract_and_store_csv(json_filename, csv_filename)
+json_filename = 'reports_02_26.json'
+csv_filename = 'extracted_data_02_26.csv'
+labels_filename = 'reports_overall_no_filters.json'
+extract_and_store_csv(json_filename, csv_filename, labels_filename)
