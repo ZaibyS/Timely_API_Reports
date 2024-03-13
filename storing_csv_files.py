@@ -8,7 +8,7 @@ def extract_label_name(label_id, labels_data):
             return label['name']
     return None
 
-def extract_and_store_csv(json_folder, csv_filename, labels_filename):
+def extract_and_store_csv(json_folder, csv_filename, labels_filename, date):
     with open(labels_filename, 'r') as labels_file:
         labels_data = json.load(labels_file)['labels']
 
@@ -30,7 +30,7 @@ def extract_and_store_csv(json_folder, csv_filename, labels_filename):
 
         # Iterate through each JSON file in the specified folder
         for filename in os.listdir(json_folder):
-            if filename.endswith(".json") and filename != 'reports_2024-02-26_2024-02-26_all.json':
+            if filename.endswith(".json") and filename != f'reports_{date}_{date}_all.json':
                 json_filepath = os.path.join(json_folder, filename)
 
                 with open(json_filepath, 'r') as json_file:
@@ -51,12 +51,15 @@ def extract_and_store_csv(json_folder, csv_filename, labels_filename):
                     user_id = entry['user']['id']
                     user_email = entry['user']['email']
                     billable_hours = round(entry['duration']['total_hours'], 2)
+                    logged_hours = round(entry['duration']['total_hours'], 2)
                     logged_money = entry['cost']['amount']
                     hour_billed_status = "Yes" if entry['billed'] else "No"
                     hour_notes = entry['note']
                     external_id = ','.join(map(str, entry['external_link_ids']))
                     budget_type = entry['project']['budget_type']
                     project_description = entry['project']['description']
+                    estimated_duration = round(entry['estimated_duration']['total_hours'], 2)
+                    estimated_cost = entry['estimated_cost']['amount']
 
                     # Extract label_ids and required_label_ids
                     label_ids = entry['label_ids']
@@ -70,6 +73,14 @@ def extract_and_store_csv(json_folder, csv_filename, labels_filename):
 
                     # Convert label names to a comma-separated string
                     label_names_str = ','.join(filter(None, label_names))
+
+                    if logged_money == 0:
+                        non_billable_hours = billable_hours
+                        billable_hours  = 0
+                        logged_money = None
+                    else:
+                        non_billable_hours = 0
+                        
 
                     # Extract timestamps dynamically
                     timestamps = entry.get('timestamps', [])
@@ -99,8 +110,8 @@ def extract_and_store_csv(json_folder, csv_filename, labels_filename):
                         'Hour To': to_time,
                         'Teams': None,
                         'External ID': external_id,
-                        'Logged Hours': None,
-                        'Non-billable Hours': None,
+                        'Logged Hours': logged_hours,
+                        'Non-billable Hours': non_billable_hours,
                         'Budget Type': budget_type,
                         'Budget Interval': None,
                         'Budget Total': None,
@@ -109,8 +120,8 @@ def extract_and_store_csv(json_folder, csv_filename, labels_filename):
                         'Budget Remaining': None,
                         'Budget Remaining (%)': None,
                         'Logged Cost': None,
-                        'Planned Hours': 0,
-                        'Planned Money (€)': 0,
+                        'Planned Hours': estimated_duration,
+                        'Planned Money (€)': estimated_cost,
                         'Planned Cost (€)': None,
                         'Email': user_email,
                         'Project Description': project_description
@@ -118,7 +129,9 @@ def extract_and_store_csv(json_folder, csv_filename, labels_filename):
 
         writer.writerows(extracted_data)
 
-json_folder = 'data/2024-02-26'
-csv_filename = 'extracted_data__date.csv'
-labels_filename = 'data/2024-02-26/reports_2024-02-26_2024-02-26_all.json'
-extract_and_store_csv(json_folder, csv_filename, labels_filename)
+
+date = "2024-03-01"
+json_folder = f'data/{date}'
+csv_filename = f'extracted_{date}.csv'
+labels_filename = f'data/{date}/reports_{date}_{date}_all.json'
+extract_and_store_csv(json_folder, csv_filename, labels_filename, date)
