@@ -1,0 +1,5 @@
+Client,Project,Hour Date,Name,Billable Hours,Logged Money,Hour Tags,Hour Billed Status,Hour Note,Hour From,Hour To,Teams,External ID,Logged Hours,Non-billable Hours,Budget Type,Budget Interval,Budget Total,Budget Spent,Budget Spent (%),Budget Remaining,Budget Remaining (%),Logged Cost,Planned Hours,Planned Money,Planned Cost,Email,Project Description
+Admin,Admin,2024-03-10,Monika Sapranauskiene,0,,,No,,,,,,0.08,0.08,,,,,,,,,0.0,0.0,,monika.s@ivc-consulting.com,
+Admin,Admin,2024-03-10,Arnas Laurynas,0,,,No,,14:10,17:20,,,3.17,3.17,,,,,,,,,0.0,0.0,,arnas.l@ivc-consulting.com,
+Marketing and Sales,Business development,2024-03-10,Monika Sapranauskiene,0,,Marketing materials,No,,,,,,1.83,1.83,,,,,,,,,0.0,0.0,,monika.s@ivc-consulting.com,
+Sun,Sun-IMP-BM financing for platform-2024,2024-03-10,Arnas Laurynas,0.92,366.67,Review time,No,Microsoft OneNote,23:05,00:00,,,0.92,0,M,,,,,,,,0.0,0.0,,arnas.l@ivc-consulting.com,
