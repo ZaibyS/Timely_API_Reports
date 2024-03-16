@@ -66,10 +66,9 @@ def read_csv(file_path, encoding='utf-8'):
             data.append(row)
     return data
 
-def load(date,connection_string):
-    df = read_csv(f'reports/extracted_{date}.csv')
+def load(connection_string):
+    df = read_csv('combined_report/combined_report.csv')
     load_data(df, connection_string)
 
-# connection_string = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:ivc-consulting-sql-server.database.windows.net,1433;Database=ivc_consulting_db;Uid=ivc-consulting;Pwd=hN3$Kp#9@Lm7;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
-# date = "2024-02-05"
-# load(date,connection_string)
+connection_string = 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:ivc-consulting-sql-server.database.windows.net,1433;Database=ivc_consulting_db;Uid=ivc-consulting;Pwd=hN3$Kp#9@Lm7;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+load(connection_string)
