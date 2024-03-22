@@ -133,5 +133,5 @@ def transform(date):
     labels_filename = f'data/{date}/reports_{date}_all.json'
     extract_and_store_csv(json_folder, csv_filename, labels_filename, date)
 
-date = "2024-03-15"
-transform(date)
+# date = "2024-03-15"
+# transform(date)

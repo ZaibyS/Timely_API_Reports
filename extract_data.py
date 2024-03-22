@@ -93,5 +93,5 @@ def fetch_and_save_reports(date):
     else:
         print(f"Failed to fetch reports. Status code: {response.status_code}")
 
-date = "2024-03-15"
-fetch_and_save_reports(date)
+# date = "2024-03-15"
+# fetch_and_save_reports(date)
